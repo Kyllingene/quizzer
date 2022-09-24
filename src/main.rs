@@ -1,4 +1,5 @@
 use std::num::ParseIntError;
+use std::io::Write;
 
 type QuestionResult = Result<bool, ParseIntError>;
 
@@ -23,6 +24,8 @@ trait Question {
     fn check(&self, given: String) -> QuestionResult {
         self.get_answer().check(given)
     }
+
+    fn ask(&self) -> QuestionResult;
 }
 
 pub struct BasicQuestion {
@@ -34,8 +37,30 @@ impl Question for BasicQuestion {
     fn get_answer(&self) -> Box<dyn Answer> {
         Box::new(self.answer.clone())
     }
+
+    fn ask(&self) -> QuestionResult {
+        print!("{}", self.prompt);
+        std::io::stdout().flush().unwrap();
+
+        let mut buf = String::new();
+        let stdin = std::io::stdin();
+        stdin.read_line(&mut buf).unwrap();
+        let given = buf.strip_suffix('\n').unwrap_or(&buf).to_string();
+
+        self.get_answer().check(given)
+    }
 }
 
-fn main() {
-    println!("Hello, world!");
+fn main() -> Result<(), ParseIntError> {
+    let q = BasicQuestion{
+        prompt: "What is the answer to life? : ".to_string(),
+        answer: "42".to_string(),
+    };
+
+    match q.ask()? {
+        true  => println!("\n Congratz!"),
+        false => println!("\n Failed!"),
+    }
+
+    Ok(())
 }
