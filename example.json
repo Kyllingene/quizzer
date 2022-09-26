@@ -1,0 +1,24 @@
+{
+    "questions": [
+        {
+            "type": "choice",
+            "prompt": "What letter comes after H? : ",
+            "answer": "I",
+            "choices" = [
+                "I",
+                "J",
+                "Z"
+            ]
+        },
+        {
+            "type": "basic",
+            "prompt": "What is 'Hello' in Finnish? : ",
+            "answer": "Terve"
+        },
+        {
+            "type": "number",
+            "prompt": "What is the answer t o life? : ",
+            "answer": 42
+        }
+    ]
+}
