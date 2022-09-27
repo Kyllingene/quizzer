@@ -121,7 +121,7 @@ impl Question for MultipleChoiceQuestion {
 
 /// A generic answer
 /// This crate provides impls for String and i32
-trait Answer: std::fmt::Display {
+pub trait Answer: std::fmt::Display {
     fn check(&self, given: String) -> QuestionResult<bool>;
 }
 

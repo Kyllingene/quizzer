@@ -24,14 +24,13 @@ fn main() -> Result<(), QuestionError> {
 
     let pack = Pack::from_file(args.quiz)?;
 
-    let wrong: usize;
     let right = pack.quiz(args.count, true, true)?;
 
-    if args.count.is_some() {
-        wrong = args.count.unwrap() - right;
+    let wrong = if args.count.is_some() {
+        args.count.unwrap() - right
     } else {
-        wrong = pack.len() - right;
-    }
+        pack.len() - right
+    };
 
     println!("\n\nYou got {} wrong and {} right", wrong, right);
 
