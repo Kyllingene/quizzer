@@ -4,7 +4,7 @@
             "type": "choice",
             "prompt": "What letter comes after H? : ",
             "answer": "I",
-            "choices" = [
+            "choices": [
                 "I",
                 "J",
                 "Z"
@@ -17,7 +17,7 @@
         },
         {
             "type": "number",
-            "prompt": "What is the answer t o life? : ",
+            "prompt": "What is the answer to life? : ",
             "answer": 42
         }
     ]

@@ -4,26 +4,36 @@ mod question;
 
 use error::*;
 use pack::*;
-use question::*;
+
+use clap::Parser;
+
+#[derive(Parser, Debug)]
+#[clap(author, version, about, long_about = None)]
+struct Args {
+    /// Path to a quiz file (ends in .json)
+    #[clap(short, long, value_parser)]
+    quiz: String,
+
+    /// How many questions to do (optional, defaults to all)
+    #[clap(short, long, value_parser)]
+    count: Option<usize>,
+}
 
 fn main() -> Result<(), QuestionError> {
-    let q1 = IntQuestion {
-        prompt: "What is the answer to life? : ".to_string(),
-        answer: 42,
-    };
+    let args = Args::parse();
 
-    let q2 = MultipleChoiceQuestion::new("What letter comes after H? : ", "i", vec!["i", "j", "k"]);
+    let pack = Pack::from_file(args.quiz)?;
 
-    let q3 = BasicQuestion {
-        prompt: "What is 'Hello' in Finnish? : ".to_string(),
-        answer: "Terve".to_string(),
-    };
+    let wrong: usize;
+    let right = pack.quiz(args.count, true, true)?;
 
-    let pack = Pack {
-        questions: vec![Box::new(q1), Box::new(q2), Box::new(q3)],
-    };
+    if args.count.is_some() {
+        wrong = args.count.unwrap() - right;
+    } else {
+        wrong = pack.len() - right;
+    }
 
-    println!("{}", pack.quiz(Some(5), true, true)?);
+    println!("\n\nYou got {} wrong and {} right", wrong, right);
 
     Ok(())
 }

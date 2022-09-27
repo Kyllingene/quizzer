@@ -69,7 +69,7 @@ pub struct MultipleChoiceQuestion {
 }
 
 impl MultipleChoiceQuestion {
-    pub fn new(prompt: &str, answer: &str, choices: Vec<&str>) -> MultipleChoiceQuestion {
+    pub fn new(prompt: String, answer: String, choices: Vec<&str>) -> MultipleChoiceQuestion {
         MultipleChoiceQuestion {
             prompt: prompt.to_string(),
             answer: answer.to_lowercase().to_string(),
@@ -97,7 +97,7 @@ impl Question for MultipleChoiceQuestion {
         let mut buf = String::new();
         let stdin = std::io::stdin();
         stdin.read_line(&mut buf).unwrap();
-        let mut given = buf.trim_end().to_string();
+        let mut given = buf.trim_end().to_lowercase().to_string();
 
         while !self.choices.contains(&given) {
             println!(" Invalid answer!");
@@ -127,7 +127,7 @@ trait Answer: std::fmt::Display {
 
 impl Answer for String {
     fn check(&self, given: String) -> QuestionResult<bool> {
-        Ok(*self == given)
+        Ok(self.to_lowercase() == given.to_lowercase())
     }
 }
 

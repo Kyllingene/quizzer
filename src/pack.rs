@@ -1,5 +1,3 @@
-use std::path::Path;
-
 use serde_json::Value;
 
 use crate::error::*;
@@ -41,18 +39,25 @@ impl Pack {
         Ok(wrong)
     }
 
+    /// Get the length of the quiz
+    pub fn len(&self) -> usize {
+        self.questions.len()
+    }
+
     /// Load a pack from a JSON file
-    pub fn from_file(src: &Path) -> QuestionResult<Self> {
-        todo!()
+    pub fn from_file(path: String) -> QuestionResult<Self> {
+        Pack::from_json(
+            std::fs::read_to_string(path.clone())
+                .expect(format!("Unable to open file: {}", path).as_str()),
+        )
     }
 
     /// Load a pack from a JSON string
     pub fn from_json(src: String) -> QuestionResult<Self> {
         let mut questions: Vec<Box<dyn Question>> = Vec::new();
 
-        let json: Value = serde_json::from_str(&src).map_err(|err| {
-            QuestionError::ParseError(Box::new(err))
-        })?;
+        let json: Value =
+            serde_json::from_str(&src).map_err(|err| QuestionError::ParseError(Box::new(err)))?;
 
         if let Value::Array(qs) = &json["questions"] {
             for q in qs {
@@ -63,22 +68,20 @@ impl Pack {
                     return Err(QuestionError::NoPrompt);
                 }
 
-
                 if let Value::String(t) = &q["type"] {
                     match t.to_lowercase().as_str() {
                         "basic" => {
                             let answer;
                             if let Value::String(a) = &q["answer"] {
-                                answer = a;
+                                answer = a.to_lowercase();
                             } else {
                                 return Err(QuestionError::BadAnswer);
                             }
-                            questions.push(Box::new(
-                                BasicQuestion {
-                                    prompt: prompt.to_string(), answer: answer.to_string()
-                                }
-                            ));
-                        },
+                            questions.push(Box::new(BasicQuestion {
+                                prompt: prompt.to_string(),
+                                answer: answer.to_string(),
+                            }));
+                        }
                         "number" => {
                             let answer;
                             if let Value::Number(a) = &q["answer"] {
@@ -89,17 +92,15 @@ impl Pack {
                             } else {
                                 return Err(QuestionError::BadAnswer);
                             }
-                            questions.push(Box::new(
-                                IntQuestion {
-                                    prompt: prompt.to_string(),
-                                    answer: answer.unwrap(),
-                                }
-                            ));
-                        },
+                            questions.push(Box::new(IntQuestion {
+                                prompt: prompt.to_string(),
+                                answer: answer.unwrap(),
+                            }));
+                        }
                         "choice" => {
                             let answer;
                             if let Value::String(a) = &q["answer"] {
-                                answer = a;
+                                answer = a.to_lowercase();
                             } else {
                                 return Err(QuestionError::BadAnswer);
                             }
@@ -107,15 +108,19 @@ impl Pack {
                             if let Value::Array(os) = &q["choices"] {
                                 for option in os {
                                     if let Value::String(o) = option {
-                                        options.push(o.clone());
+                                        options.push(o.to_lowercase());
                                     } else {
                                         return Err(QuestionError::BadChoiceType);
                                     }
                                 }
                             }
 
-                            questions.push(Box::new(MultipleChoiceQuestion::new(prompt, answer, options.iter().map(|s| s.as_str()).collect())));
-                        },
+                            questions.push(Box::new(MultipleChoiceQuestion::new(
+                                prompt.to_string(),
+                                answer,
+                                options.iter().map(|s| s.as_str()).collect(),
+                            )));
+                        }
 
                         _ => return Err(QuestionError::BadQuestionType),
                     }
