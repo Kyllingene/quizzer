@@ -1,5 +1,0 @@
-* TODO:
-*** Create basic module system (list of questions)
-*** Create more question types
-*** Create ways to add custom question types
-*** Add scripting (lua? wren? wasm?)
