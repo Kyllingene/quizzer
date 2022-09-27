@@ -91,7 +91,13 @@ impl Question for MultipleChoiceQuestion {
     }
 
     fn ask(&self, warn_wrong: bool) -> QuestionResult<bool> {
-        print!("{}", self.prompt);
+        let mut choice_str = String::new();
+        for choice in self.choices.iter() {
+            choice_str.push_str(choice.as_str());
+            choice_str.push_str(", ");
+        }
+
+        print!("{}", self.prompt.replace("%%", choice_str.as_str()));
         std::io::stdout().flush().unwrap();
 
         let mut buf = String::new();

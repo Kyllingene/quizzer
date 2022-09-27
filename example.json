@@ -2,7 +2,7 @@
     "questions": [
         {
             "type": "choice",
-            "prompt": "What letter comes after H? : ",
+            "prompt": "What letter comes after H (%%)? : ",
             "answer": "I",
             "choices": [
                 "I",

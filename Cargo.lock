@@ -125,16 +125,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c0f80d65747a3e43d1596c7c5492d95d5edddaabd45a7fcdb02b95f644164966"
 
 [[package]]
-name = "lingo"
-version = "1.0.0"
-dependencies = [
- "clap",
- "rand",
- "serde",
- "serde_json",
-]
-
-[[package]]
 name = "once_cell"
 version = "1.15.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -183,6 +173,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7bd7356a8122b6c4a24a82b278680c73357984ca2fc79a0f9fa6dea7dced7c58"
 dependencies = [
  "unicode-ident",
+]
+
+[[package]]
+name = "quizzer"
+version = "1.0.0"
+dependencies = [
+ "clap",
+ "rand",
+ "serde",
+ "serde_json",
 ]
 
 [[package]]
