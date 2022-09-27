@@ -31,7 +31,7 @@ impl Pack {
                 if random {
                     wrong += choice(&self.questions).ask(warn_wrong)? as usize;
                 } else {
-                    wrong += *(&self.questions[i % self.questions.len()].ask(warn_wrong)?) as usize;
+                    wrong += self.questions[i % self.questions.len()].ask(warn_wrong)? as usize;
                 }
             }
         }
@@ -48,7 +48,7 @@ impl Pack {
     pub fn from_file(path: String) -> QuestionResult<Self> {
         Pack::from_json(
             std::fs::read_to_string(path.clone())
-                .expect(format!("Unable to open file: {}", path).as_str()),
+                .unwrap_or_else(|_| panic!("Unable to open file: {}", path)),
         )
     }
 

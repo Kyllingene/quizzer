@@ -71,11 +71,11 @@ pub struct MultipleChoiceQuestion {
 impl MultipleChoiceQuestion {
     pub fn new(prompt: String, answer: String, choices: Vec<&str>) -> MultipleChoiceQuestion {
         MultipleChoiceQuestion {
-            prompt: prompt.to_string(),
-            answer: answer.to_lowercase().to_string(),
+            prompt,
+            answer: answer.to_lowercase(),
             choices: choices
                 .iter()
-                .map(|s| s.to_lowercase().to_string())
+                .map(|s| s.to_lowercase())
                 .collect(),
         }
     }
@@ -97,7 +97,7 @@ impl Question for MultipleChoiceQuestion {
         let mut buf = String::new();
         let stdin = std::io::stdin();
         stdin.read_line(&mut buf).unwrap();
-        let mut given = buf.trim_end().to_lowercase().to_string();
+        let mut given = buf.trim_end().to_lowercase();
 
         while !self.choices.contains(&given) {
             println!(" Invalid answer!");
